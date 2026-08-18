@@ -1,0 +1,126 @@
+<div class="driver-page">
+  <div class="section-header">
+    <div>
+      <h1>Driver <span class="accent">Assigned Vehicle</span></h1>
+      <p class="section-subtitle">Welcome back, {{ auth.user()?.name }} · Monitor your vehicle health and service thresholds.</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/driver-dashboard/report-damage" class="btn btn-primary">
+        <span class="material-icons">car_crash</span>
+        <span>Report Damage / Issue</span>
+      </a>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="card" style="padding: 48px; text-align: center; color: #94A3B8;">
+    Loading assigned vehicle telemetry...
+  </div>
+
+  <div *ngIf="!loading && !vehicle" class="card empty-card">
+    <span class="material-icons">directions_car</span>
+    <h3>No Vehicle Assigned</h3>
+    <p>You currently do not have a vehicle linked to your profile. Please check with your fleet manager.</p>
+  </div>
+
+  <div *ngIf="!loading && vehicle" class="driver-content">
+    <!-- Vehicle Hero Banner Card -->
+    <div class="card hero-card">
+      <div class="hero-icon">
+        <span class="material-icons">directions_car</span>
+      </div>
+      <div class="hero-info">
+        <div class="hero-reg-badge">{{ vehicle.registration_number }}</div>
+        <h2 class="hero-title">{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year || '2022' }})</h2>
+        <div class="hero-status">
+          <span class="badge" [ngClass]="'badge-' + vehicle.status">
+            <span class="badge-dot"></span>
+            Status: {{ vehicle.status.replace('_', ' ') }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Telemetry Stat Cards -->
+    <div class="stat-card-grid">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <span class="material-icons">speed</span>
+        </div>
+        <div class="stat-info">
+          <div class="stat-label">Current Odometer</div>
+          <div class="stat-value">{{ (vehicle.current_odometer_km || 0) | number }} km</div>
+          <div class="stat-sub">Live recorded telemetry</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" [ngClass]="kmUntilService <= 500 ? 'icon-danger' : 'icon-success'">
+          <span class="material-icons">build</span>
+        </div>
+        <div class="stat-info">
+          <div class="stat-label">KM Until Next Service</div>
+          <div class="stat-value" [style.color]="kmUntilService <= 500 ? '#EF4444' : '#0F172A'">
+            {{ kmUntilService > 0 ? (kmUntilService | number) + ' km' : 'SERVICE DUE' }}
+          </div>
+          <div class="stat-sub">Interval limit: {{ vehicle.service_interval_km || 5000 }} km</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon icon-warning">
+          <span class="material-icons">event</span>
+        </div>
+        <div class="stat-info">
+          <div class="stat-label">Last Scheduled Service</div>
+          <div class="stat-value" style="font-size: 1.25rem;">
+            {{ vehicle.last_service_date ? (vehicle.last_service_date | date:'mediumDate') : 'Never Recorded' }}
+          </div>
+          <div class="stat-sub">{{ (vehicle.last_service_odometer_km || 0) | number }} km at service</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Links Grid -->
+    <div class="card">
+      <div class="card-header">
+        <h3>Driver Portal Navigation</h3>
+      </div>
+      <div class="card-body">
+        <div class="driver-nav-grid">
+          <a routerLink="/driver-dashboard/report-damage" class="driver-nav-card">
+            <div class="nav-icon icon-red">
+              <span class="material-icons">car_crash</span>
+            </div>
+            <div>
+              <div class="nav-title">Report New Damage</div>
+              <div class="nav-desc">File an incident report for bumps, windshields, tires, or engine issues</div>
+            </div>
+            <span class="material-icons nav-arrow">chevron_right</span>
+          </a>
+
+          <a routerLink="/driver-dashboard/issues" class="driver-nav-card">
+            <div class="nav-icon icon-blue">
+              <span class="material-icons">list_alt</span>
+            </div>
+            <div>
+              <div class="nav-title">My Reported Issues</div>
+              <div class="nav-desc">Check resolution progress and manager comments on past reports</div>
+            </div>
+            <span class="material-icons nav-arrow">chevron_right</span>
+          </a>
+
+          <a routerLink="/driver-dashboard/service-history" class="driver-nav-card">
+            <div class="nav-icon icon-green">
+              <span class="material-icons">history</span>
+            </div>
+            <div>
+              <div class="nav-title">Vehicle Service History</div>
+              <div class="nav-desc">View past maintenance records, oil changes, and repairs for this vehicle</div>
+            </div>
+            <span class="material-icons nav-arrow">chevron_right</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,193 @@
+<div class="vehicle-detail-page" *ngIf="vehicle">
+  <!-- Breadcrumb & Top Bar -->
+  <div class="section-header">
+    <div>
+      <a routerLink="/vehicles" class="back-link">← Back to Fleet Inventory</a>
+      <h1>{{ vehicle.make }} {{ vehicle.model }} <span class="reg-pill">{{ vehicle.registration_number }}</span></h1>
+      <p class="section-subtitle">Comprehensive vehicle telemetry dossier, predictive schedule, and service history.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="downloadPdfReport()" [disabled]="downloadingPdf">
+        <span class="material-icons">picture_as_pdf</span>
+        <span>{{ downloadingPdf ? 'Generating PDF...' : 'Download PDF Report' }}</span>
+      </button>
+      <a [routerLink]="['/vehicles', vehicle.id, 'edit']" class="btn btn-secondary">
+        <span class="material-icons">edit</span>
+        <span>Edit Vehicle</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Predictive Maintenance Forecast Callout Banner -->
+  <div class="predictive-banner card">
+    <div class="pred-icon">
+      <span class="material-icons">auto_graph</span>
+    </div>
+    <div class="pred-content">
+      <div class="pred-title">PL/pgSQL PREDICTIVE MAINTENANCE FORECAST</div>
+      <div class="pred-desc">
+        Based on historical rolling km/day calculations from service history, this vehicle is forecast to reach its {{ vehicle.service_interval_km || 5000 }} km threshold on:
+        <strong>{{ vehicle.predicted_service_date ? (vehicle.predicted_service_date | date:'fullDate') : 'Scheduled within 30 days' }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Specs & Driver Grid -->
+  <div class="detail-grid">
+    <!-- Vehicle Specs -->
+    <div class="card">
+      <div class="card-header">
+        <h3>Vehicle Telemetry & Specifications</h3>
+        <span class="badge" [ngClass]="'badge-' + vehicle.status">
+          <span class="badge-dot"></span>
+          {{ vehicle.status.replace('_', ' ') }}
+        </span>
+      </div>
+      <div class="card-body">
+        <div class="spec-list">
+          <div class="spec-row">
+            <span class="spec-name">Registration</span>
+            <span class="spec-val"><strong>{{ vehicle.registration_number }}</strong></span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-name">Make & Model</span>
+            <span class="spec-val">{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year || 'N/A' }})</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-name">Current Odometer</span>
+            <span class="spec-val"><strong>{{ (vehicle.current_odometer_km || 0) | number }} km</strong></span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-name">Last Service Odometer</span>
+            <span class="spec-val">{{ (vehicle.last_service_odometer_km || 0) | number }} km</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-name">Service Interval</span>
+            <span class="spec-val">{{ vehicle.service_interval_km || 5000 }} km</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-name">Last Service Date</span>
+            <span class="spec-val">{{ vehicle.last_service_date ? (vehicle.last_service_date | date:'mediumDate') : 'Never recorded' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Driver Profile & Geofence Editor -->
+    <div class="card">
+      <div class="card-header">
+        <h3>Assigned Driver & Geofence Policy</h3>
+      </div>
+      <div class="card-body">
+        <div class="driver-profile mb-4" *ngIf="vehicle.driver_name">
+          <div class="driver-avatar">{{ vehicle.driver_name.charAt(0) }}</div>
+          <div class="driver-info">
+            <div class="driver-name">{{ vehicle.driver_name }}</div>
+            <div class="driver-sub">License: {{ vehicle.driver_license || 'DL-PENDING' }}</div>
+            <div class="driver-sub">Phone: {{ vehicle.driver_phone || 'N/A' }}</div>
+          </div>
+        </div>
+        <div class="driver-profile mb-4" *ngIf="!vehicle.driver_name">
+          <p class="text-muted">No driver currently assigned to this vehicle.</p>
+        </div>
+
+        <!-- Geofence Zone Settings -->
+        <div class="geofence-editor">
+          <h4 class="geofence-title">
+            <span class="material-icons">share_location</span>
+            Circular Geofence Zone
+          </h4>
+          <p class="geofence-desc">Allowed operating zone radius around base coordinates.</p>
+
+          <div class="geofence-form">
+            <div class="form-group mb-2">
+              <label>Radius (Kilometers):</label>
+              <input
+                type="number"
+                [(ngModel)]="geofenceRadiusKm"
+                class="form-control"
+                min="1"
+                max="100"
+              />
+            </div>
+            <button class="btn btn-secondary btn-sm" (click)="saveGeofence()" [disabled]="savingGeofence">
+              <span>{{ savingGeofence ? 'Saving...' : 'Update Geofence Radius' }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Service History Records -->
+  <div class="card">
+    <div class="card-header">
+      <h3>Service & Maintenance Log</h3>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Service Date</th>
+            <th>Odometer Reading</th>
+            <th>Service Description</th>
+            <th style="text-align: right;">Cost ($)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let record of vehicle.service_records">
+            <td>{{ record.service_date | date:'mediumDate' }}</td>
+            <td>{{ (record.odometer_km || 0) | number }} km</td>
+            <td>{{ record.description || 'Regular scheduled service' }}</td>
+            <td style="text-align: right;">
+              <strong>${{ (record.cost || 0) | number:'1.2-2' }}</strong>
+            </td>
+          </tr>
+          <tr *ngIf="!vehicle.service_records || vehicle.service_records.length === 0">
+            <td colspan="4" style="text-align: center; color: #94A3B8; padding: 24px;">
+              No historical service records found for this vehicle.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Damage & Incident Reports -->
+  <div class="card">
+    <div class="card-header">
+      <h3>Damage & Incident Reports</h3>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Damage Area</th>
+            <th>Severity</th>
+            <th>Incident Title</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let issue of vehicle.issues">
+            <td>{{ issue.created_at | date:'mediumDate' }}</td>
+            <td><span class="badge badge-minor">{{ issue.damage_type }}</span></td>
+            <td>
+              <span class="badge" [ngClass]="'badge-' + issue.severity">{{ issue.severity }}</span>
+            </td>
+            <td><strong>{{ issue.title }}</strong></td>
+            <td>
+              <span class="badge" [ngClass]="'badge-' + issue.status">{{ issue.status }}</span>
+            </td>
+          </tr>
+          <tr *ngIf="!vehicle.issues || vehicle.issues.length === 0">
+            <td colspan="5" style="text-align: center; color: #94A3B8; padding: 24px;">
+              No damage or incident reports filed for this vehicle.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

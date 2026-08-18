@@ -1,0 +1,169 @@
+<div class="dashboard-page">
+  <!-- Top Title Bar -->
+  <div class="section-header">
+    <div>
+      <h1>Fleet <span class="accent">Operations</span> Dashboard</h1>
+      <p class="section-subtitle">Real-time status overview, fleet readiness, and predictive maintenance dispatch.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="runMaintenanceCheck()" [disabled]="checkRunning">
+        <span class="material-icons">refresh</span>
+        <span>{{ checkRunning ? 'Running PL/pgSQL Check...' : 'Run Maintenance Check' }}</span>
+      </button>
+      <a routerLink="/live-map" class="btn btn-primary">
+        <span class="material-icons">map</span>
+        <span>Open Live Fleet Map</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Maintenance Check Notice -->
+  <div *ngIf="maintenanceMessage" class="notice-banner">
+    <span class="material-icons">info</span>
+    <span>{{ maintenanceMessage }}</span>
+    <button class="btn-close" (click)="maintenanceMessage = ''">×</button>
+  </div>
+
+  <!-- Stat Cards Grid -->
+  <div class="stat-card-grid" *ngIf="stats">
+    <!-- 1. Total Vehicles -->
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">directions_car</span>
+      </div>
+      <div class="stat-info">
+        <div class="stat-label">Total Fleet Size</div>
+        <div class="stat-value">{{ stats.vehicles.total }}</div>
+        <div class="stat-sub">
+          <span class="badge badge-active">{{ stats.vehicles.active || 0 }} Active</span>
+          <span class="badge badge-in-service">{{ stats.vehicles.in_service || 0 }} In Service</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Active Drivers -->
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">badge</span>
+      </div>
+      <div class="stat-info">
+        <div class="stat-label">Assigned Drivers</div>
+        <div class="stat-value">{{ stats.drivers.total_drivers }}</div>
+        <div class="stat-sub">
+          <a routerLink="/drivers" class="card-link">View driver roster →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Open Maintenance Alerts -->
+    <div class="stat-card">
+      <div class="stat-icon icon-danger">
+        <span class="material-icons">build_circle</span>
+      </div>
+      <div class="stat-info">
+        <div class="stat-label">Maintenance Alerts</div>
+        <div class="stat-value">{{ stats.alerts.open_alerts }}</div>
+        <div class="stat-sub">
+          <a routerLink="/alerts" class="card-link">Review service due →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Active Incident Reports -->
+    <div class="stat-card">
+      <div class="stat-icon icon-warning">
+        <span class="material-icons">warning</span>
+      </div>
+      <div class="stat-info">
+        <div class="stat-label">Pending Damage Reports</div>
+        <div class="stat-value">{{ (+stats.issues.open_count || 0) + (+stats.issues.in_progress_count || 0) }}</div>
+        <div class="stat-sub">
+          <span class="badge badge-severe" *ngIf="+stats.issues.severe_open > 0">{{ stats.issues.severe_open }} Severe</span>
+          <span class="badge badge-moderate" *ngIf="+stats.issues.moderate_open > 0">{{ stats.issues.moderate_open }} Moderate</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Action Cards Grid -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h2>Quick Fleet Management Actions</h2>
+      <span class="badge badge-minor">Role: {{ auth.user()?.role?.replace('_', ' ') }}</span>
+    </div>
+    <div class="card-body">
+      <div class="action-grid">
+        <a routerLink="/vehicles" class="action-item">
+          <div class="action-icon">
+            <span class="material-icons">garage</span>
+          </div>
+          <div class="action-text">
+            <div class="action-title">Vehicle Inventory</div>
+            <div class="action-desc">Manage specs, service intervals & geofences</div>
+          </div>
+          <span class="material-icons arrow">chevron_right</span>
+        </a>
+
+        <a routerLink="/live-map" class="action-item">
+          <div class="action-icon icon-blue">
+            <span class="material-icons">satellite_alt</span>
+          </div>
+          <div class="action-text">
+            <div class="action-title">Live GPS Telemetry</div>
+            <div class="action-desc">Real-time vehicle movement & geofence alarms</div>
+          </div>
+          <span class="material-icons arrow">chevron_right</span>
+        </a>
+
+        <a routerLink="/issues" class="action-item">
+          <div class="action-icon icon-orange">
+            <span class="material-icons">car_crash</span>
+          </div>
+          <div class="action-text">
+            <div class="action-title">Damage & Incident Log</div>
+            <div class="action-desc">Review driver-submitted reports & photos</div>
+          </div>
+          <span class="material-icons arrow">chevron_right</span>
+        </a>
+
+        <a routerLink="/alerts" class="action-item">
+          <div class="action-icon icon-green">
+            <span class="material-icons">build_circle</span>
+          </div>
+          <div class="action-text">
+            <div class="action-title">Maintenance Alerts</div>
+            <div class="action-desc">Odometer thresholds & scheduled service check</div>
+          </div>
+          <span class="material-icons arrow">chevron_right</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Informational Feature Highlights -->
+  <div class="features-summary-grid">
+    <div class="card">
+      <div class="card-header">
+        <h3>Predictive Maintenance Engine</h3>
+      </div>
+      <div class="card-body">
+        <p class="mb-3">
+          FleetSync calculates rolling km/day averages per vehicle via native PL/pgSQL stored procedures to forecast the exact calendar date a vehicle reaches its service limit.
+        </p>
+        <a routerLink="/vehicles" class="btn btn-secondary btn-sm">Inspect Vehicle Predictions →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>Real-Time Geofence Monitoring</h3>
+      </div>
+      <div class="card-body">
+        <p class="mb-3">
+          Each vehicle has an assigned operating radius zone. Telemetry location updates outside the radius instantly trigger manager alerts with zero page refresh.
+        </p>
+        <a routerLink="/live-map" class="btn btn-secondary btn-sm">Open Live Map View →</a>
+      </div>
+    </div>
+  </div>
+</div>

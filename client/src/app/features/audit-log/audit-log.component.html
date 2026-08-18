@@ -1,0 +1,80 @@
+<div class="audit-page">
+  <div class="section-header">
+    <div>
+      <h1>System <span class="accent">Audit Log</span></h1>
+      <p class="section-subtitle">Immutable compliance journal tracking all entity creations, updates, deletes, and policy adjustments across FleetSync.</p>
+    </div>
+  </div>
+
+  <!-- Filter Card -->
+  <div class="filter-card">
+    <div class="filter-row">
+      <div class="filter-field" style="max-width: 260px;">
+        <label style="font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase; margin-bottom: 4px; display: block;">Filter by Entity:</label>
+        <select [(ngModel)]="selectedEntityType" (ngModelChange)="loadLogs()" class="form-control">
+          <option value="all">All Entities</option>
+          <option value="vehicle">Vehicle Operations</option>
+          <option value="driver">Driver Records</option>
+          <option value="issue">Incident Reports</option>
+          <option value="geofence">Geofence Policies</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="card loading-state-container">
+    <div class="spinner-circle"></div>
+    <span>Loading audit log entries...</span>
+  </div>
+
+  <!-- Audit Log Table Card -->
+  <div class="card" *ngIf="!loading">
+    <div class="card-header">
+      <h3>Audit Trail ({{ totalLogs }} Total Records)</h3>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Operator</th>
+            <th>Action</th>
+            <th>Target Entity</th>
+            <th>Change Details Snapshot</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of logs">
+            <td style="white-space: nowrap; font-size: 0.8125rem; color: #64748B;">
+              {{ log.created_at | date:'medium' }}
+            </td>
+            <td>
+              <div class="user-cell">
+                <span class="user-name"><strong>{{ log.user_name || 'System Auto' }}</strong></span>
+                <span class="user-role badge" [ngClass]="'badge-' + (log.user_role || 'active')">
+                  {{ log.user_role || 'SYSTEM' }}
+                </span>
+              </div>
+            </td>
+            <td>
+              <span class="action-tag">{{ log.action }}</span>
+            </td>
+            <td>
+              <span class="badge badge-minor">{{ log.entity_type }} #{{ log.entity_id || '—' }}</span>
+            </td>
+            <td>
+              <pre class="json-preview">{{ log.details | json }}</pre>
+            </td>
+          </tr>
+
+          <tr *ngIf="logs.length === 0">
+            <td colspan="5" style="text-align: center; color: #94A3B8; padding: 36px;">
+              No audit log entries found.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

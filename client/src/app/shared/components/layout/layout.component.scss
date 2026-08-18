@@ -1,0 +1,138 @@
+// ─── Fully Responsive Shell Layout SCSS ────────────────────────────────────────
+
+.shell-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-bg-app, #f8fafc);
+  position: relative;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+// ─── Mobile Topbar ─────────────────────────────────────────────────────────────
+.mobile-topbar {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    padding: 0 16px;
+    background-color: #0f172a;
+    color: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    border-bottom: 1px solid #1e293b;
+
+    .btn-hamburger {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      border-radius: 6px;
+
+      &:hover {
+        background-color: #1e293b;
+      }
+
+      .material-icons {
+        font-size: 24px;
+      }
+    }
+
+    .mobile-brand {
+      .brand-name {
+        font-family: 'Hanken Grotesk', -apple-system, sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: #ffffff;
+
+        strong {
+          color: #60a5fa;
+        }
+      }
+    }
+
+    .mobile-user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background-color: #0052ff;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+
+// ─── Sidebar Wrapper & Mobile Drawer ─────────────────────────────────────────
+.sidebar-wrapper {
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 60;
+    transform: translateX(-100%);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: none;
+
+    &.mobile-open {
+      transform: translateX(0);
+      box-shadow: 4px 0 24px rgba(0, 0, 0, 0.35);
+    }
+  }
+}
+
+.sidebar-backdrop {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(2px);
+    z-index: 55;
+    animation: fadeIn 0.2s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+// ─── Main Content Area ────────────────────────────────────────────────────────
+.shell-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.page-content {
+  flex: 1;
+  padding: 32px 40px;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 16px 12px;
+  }
+}

@@ -1,0 +1,235 @@
+// ─── Clean Modern Sidebar SCSS ────────────────────────────────────────────────
+
+.app-sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background-color: #0f172a;
+  color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #1e293b;
+  padding: 20px 16px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.sidebar-brand {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #1e293b;
+
+  .brand-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background-color: #0052ff;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+
+      .material-icons {
+        font-size: 20px;
+      }
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+
+      .brand-name {
+        font-family: 'Hanken Grotesk', -apple-system, sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: -0.01em;
+
+        strong {
+          color: #60a5fa;
+        }
+      }
+
+      .project-tag {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 10px;
+        color: #94a3b8;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+    }
+  }
+}
+
+.user-chip {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background-color: #0052ff;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    .user-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-role-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: #93c5fd;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-grow: 1;
+
+  .nav-section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #64748b;
+    padding: 0 12px 8px;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+
+    .nav-icon {
+      font-size: 20px;
+      color: #64748b;
+      transition: color 0.15s ease;
+    }
+
+    &:hover {
+      background-color: #1e293b;
+      color: #ffffff;
+
+      .nav-icon {
+        color: #60a5fa;
+      }
+    }
+
+    &.active {
+      background-color: #0052ff;
+      color: #ffffff;
+      font-weight: 600;
+
+      .nav-icon {
+        color: #ffffff;
+      }
+    }
+  }
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #1e293b;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .gateway-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: #94a3b8;
+    background-color: #1e293b;
+    padding: 6px 10px;
+    border-radius: 4px;
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #eab308;
+    }
+
+    &.connected {
+      color: #34d399;
+
+      .pulse-dot {
+        background-color: #10b981;
+      }
+    }
+  }
+
+  .btn-sidebar-logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 9px;
+    background-color: transparent;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    color: #cbd5e1;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    .material-icons {
+      font-size: 16px;
+    }
+
+    &:hover {
+      background-color: #ef4444;
+      border-color: #ef4444;
+      color: #ffffff;
+    }
+  }
+}

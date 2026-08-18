@@ -1,0 +1,40 @@
+.audit-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .user-name {
+    font-size: 0.875rem;
+  }
+}
+
+.action-tag {
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  background-color: var(--color-bg-app);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  color: var(--color-primary);
+}
+
+.json-preview {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: #334155;
+  background-color: var(--color-bg-app);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  max-width: 420px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
+}

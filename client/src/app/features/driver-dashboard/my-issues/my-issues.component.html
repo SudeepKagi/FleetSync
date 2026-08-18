@@ -1,0 +1,63 @@
+<div class="my-issues-page">
+  <div class="section-header">
+    <div>
+      <a routerLink="/driver-dashboard" class="back-link">← Back to Driver Dashboard</a>
+      <h1>My Reported <span class="accent">Damage Issues</span></h1>
+      <p class="section-subtitle">Real-time status tracking for incidents you have submitted to the fleet operations team.</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/driver-dashboard/report-damage" class="btn btn-primary">
+        <span class="material-icons">add</span>
+        <span>Report New Incident</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h3>Incident History Log ({{ issues.length }} Reports)</h3>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date Filed</th>
+            <th>Damage Area</th>
+            <th>Severity</th>
+            <th>Incident Title</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let issue of issues">
+            <td>{{ issue.created_at | date:'mediumDate' }}</td>
+            <td>
+              <span class="badge badge-minor">{{ issue.damage_type }}</span>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="'badge-' + issue.severity">
+                <span class="badge-dot"></span>
+                {{ issue.severity }}
+              </span>
+            </td>
+            <td>
+              <strong>{{ issue.title }}</strong>
+              <div *ngIf="issue.description" class="issue-sub-desc">{{ issue.description }}</div>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="'badge-' + issue.status">
+                {{ issue.status.replace('_', ' ') }}
+              </span>
+            </td>
+          </tr>
+
+          <tr *ngIf="issues.length === 0">
+            <td colspan="5" style="text-align: center; color: #94A3B8; padding: 36px;">
+              You haven't filed any vehicle damage or incident reports.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

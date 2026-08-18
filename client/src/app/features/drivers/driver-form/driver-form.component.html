@@ -1,0 +1,74 @@
+<div class="driver-form-page">
+  <div class="section-header">
+    <div>
+      <a routerLink="/drivers" class="back-link">← Back to Driver Roster</a>
+      <h1>{{ isEditMode ? 'Edit Driver Profile' : 'Register New Driver & Portal Login' }}</h1>
+      <p class="section-subtitle">{{ isEditMode ? 'Update driver contact and license details' : 'Creates both a driver profile and their login account for damage reporting' }}</p>
+    </div>
+  </div>
+
+  <div class="card form-card">
+    <div class="info-callout" *ngIf="!isEditMode">
+      <span class="material-icons">badge</span>
+      <div>
+        <strong>Automated Account Creation:</strong> Registering this driver automatically creates their <code>driver</code>-role login credentials for the mobile damage reporting app.
+      </div>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div *ngIf="error" class="alert-box">
+        <span class="material-icons">error_outline</span>
+        <span>{{ error }}</span>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="name">Driver Full Name *</label>
+          <input id="name" type="text" formControlName="name" class="form-control" placeholder="e.g. Marcus Vance" />
+          <div *ngIf="form.get('name')?.touched && form.get('name')?.invalid" class="form-error">
+            Driver name is required.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="license">License Number *</label>
+          <input id="license" type="text" formControlName="license_number" class="form-control" placeholder="e.g. DL-008-MV" />
+          <div *ngIf="form.get('license_number')?.touched && form.get('license_number')?.invalid" class="form-error">
+            License number is required.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input id="phone" type="text" formControlName="phone" class="form-control" placeholder="+1-555-0199" />
+        </div>
+
+        <ng-container *ngIf="!isEditMode">
+          <div class="form-group">
+            <label for="email">Driver Login Email *</label>
+            <input id="email" type="email" formControlName="email" class="form-control" placeholder="marcus@fleetsync.com" />
+            <div *ngIf="form.get('email')?.touched && form.get('email')?.invalid" class="form-error">
+              Valid email is required for login.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="pwd">Initial Password *</label>
+            <input id="pwd" type="password" formControlName="password" class="form-control" placeholder="Password123!" />
+            <div *ngIf="form.get('password')?.touched && form.get('password')?.invalid" class="form-error">
+              Password is required (min 6 characters).
+            </div>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="card-footer" style="padding-left: 0; padding-right: 0; background: transparent; margin-top: 24px;">
+        <a routerLink="/drivers" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid">
+          <span class="material-icons">person_add</span>
+          <span>{{ loading ? 'Saving...' : isEditMode ? 'Update Driver' : 'Register Driver' }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,175 @@
+<div class="report-damage-page">
+  <div class="section-header">
+    <div>
+      <a routerLink="/driver-dashboard" class="back-link">← Back to Driver Dashboard</a>
+      <h1>Report <span class="accent">Vehicle Damage</span></h1>
+      <p class="section-subtitle">File an incident report or mechanical fault. Severe damage immediately alerts fleet managers.</p>
+    </div>
+  </div>
+
+  <!-- Submission Success State -->
+  <div *ngIf="submitted" class="card success-card">
+    <div class="success-icon">
+      <span class="material-icons">check_circle</span>
+    </div>
+    <h2>Damage Report Submitted!</h2>
+    <p>Your incident report and photo evidence have been logged and dispatched to the fleet maintenance team.</p>
+    <div class="success-actions">
+      <button class="btn btn-secondary" (click)="resetForm()">Report Another Issue</button>
+      <a routerLink="/driver-dashboard/issues" class="btn btn-primary">View My Reported Issues</a>
+    </div>
+  </div>
+
+  <!-- Main Report Form -->
+  <div *ngIf="!submitted" class="card form-card">
+    <div *ngIf="vehicle" class="vehicle-assigned-banner">
+      <span class="material-icons">directions_car</span>
+      <div>
+        <strong>Reporting for Vehicle:</strong> {{ vehicle.registration_number }} · {{ vehicle.make }} {{ vehicle.model }}
+      </div>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div *ngIf="error" class="alert-box">
+        <span class="material-icons">error_outline</span>
+        <span>{{ error }}</span>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="dtype">Damage Area / Component *</label>
+          <select id="dtype" formControlName="damage_type" class="form-control">
+            <option value="bumper">Bumper / Front Grill</option>
+            <option value="mirror">Side Mirror / Glass</option>
+            <option value="windshield">Windshield / Windows</option>
+            <option value="tire">Tire / Wheel Rim</option>
+            <option value="engine">Engine / Transmission / Battery</option>
+            <option value="body_paint">Bodywork / Paint Scratch</option>
+            <option value="other">Other Component</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="sev">Damage Severity *</label>
+          <select id="sev" formControlName="severity" class="form-control">
+            <option value="minor">Minor — Cosmetic only, safe to drive</option>
+            <option value="moderate">Moderate — Noticeable fault, needs scheduled fix</option>
+            <option value="severe">Severe — Critical hazard / Vehicle immobilized</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Severe Warning Box -->
+      <div *ngIf="form.get('severity')?.value === 'severe'" class="severe-callout">
+        <span class="material-icons">warning</span>
+        <div>
+          <strong>High Severity Incident Alert:</strong> Selecting 'Severe' triggers an instant real-time telemetry alarm to the manager dashboard and automatically sets this vehicle status to <em>In Service</em>.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="title">Incident Summary Title *</label>
+        <input
+          id="title"
+          type="text"
+          formControlName="title"
+          class="form-control"
+          placeholder="e.g. Front Right Bumper Scrape in Warehouse Bay 4"
+        />
+        <div *ngIf="form.get('title')?.touched && form.get('title')?.invalid" class="form-error">
+          Please enter a brief descriptive title.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="desc">Incident Description &amp; Context</label>
+        <textarea
+          id="desc"
+          formControlName="description"
+          class="form-control"
+          placeholder="Explain how the damage occurred, location, driving conditions, or symptoms..."
+        ></textarea>
+      </div>
+
+      <!-- Real Photo Upload & Camera Feature -->
+      <div class="form-group photo-upload-section">
+        <label>Damage Photo Evidence (Camera / Upload)</label>
+
+        <!-- Hidden Native File Inputs -->
+        <!-- 1. Direct Camera Capture for Mobile Devices -->
+        <input
+          #cameraInput
+          type="file"
+          accept="image/*"
+          capture="environment"
+          (change)="onFileSelected($event)"
+          style="display: none;"
+          id="cameraFileInput"
+        />
+
+        <!-- 2. Standard File Gallery Picker -->
+        <input
+          #galleryInput
+          type="file"
+          accept="image/*"
+          (change)="onFileSelected($event)"
+          style="display: none;"
+          id="galleryFileInput"
+        />
+
+        <!-- Action Buttons when no photo is selected -->
+        <div *ngIf="!photoPreview" class="photo-picker-box">
+          <div class="picker-actions">
+            <button
+              type="button"
+              class="btn btn-secondary photo-action-btn"
+              (click)="cameraInput.click()"
+            >
+              <span class="material-icons">photo_camera</span>
+              <span>Take Photo with Camera</span>
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-secondary photo-action-btn"
+              (click)="galleryInput.click()"
+            >
+              <span class="material-icons">add_photo_alternate</span>
+              <span>Upload from Files / Gallery</span>
+            </button>
+          </div>
+          <p class="picker-hint">Tap to capture live damage photo from your device camera or upload image (JPEG, PNG, WEBP).</p>
+        </div>
+
+        <!-- Live Photo Preview -->
+        <div *ngIf="photoPreview" class="photo-preview-card">
+          <img [src]="photoPreview" alt="Damage evidence photograph preview" class="preview-img" />
+          <div class="preview-info">
+            <div class="preview-label">
+              <span class="material-icons">check_circle</span>
+              <span>Photo Attached</span>
+            </div>
+            <div class="preview-actions">
+              <button type="button" class="btn btn-outline-danger btn-sm" (click)="removePhoto()">
+                <span class="material-icons">delete</span>
+                <span>Remove Photo</span>
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" (click)="cameraInput.click()">
+                <span class="material-icons">cached</span>
+                <span>Retake</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer" style="padding-left: 0; padding-right: 0; background: transparent; margin-top: 24px;">
+        <a routerLink="/driver-dashboard" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid">
+          <span class="material-icons">send</span>
+          <span>{{ loading ? 'Submitting Report...' : 'Submit Incident Report' }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

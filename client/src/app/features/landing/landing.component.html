@@ -1,0 +1,335 @@
+<!-- Navigation Bar -->
+<header class="project-header">
+  <div class="nav-container">
+    <div class="nav-brand">
+      <a routerLink="/" class="brand-title">Fleet<span>Sync</span></a>
+    </div>
+
+    <!-- Desktop Navigation Links -->
+    <nav class="nav-links desktop-only">
+      <a href="javascript:void(0)" (click)="scrollToSection('problem')">Problem</a>
+      <a href="javascript:void(0)" (click)="scrollToSection('features')">Features</a>
+      <a href="javascript:void(0)" (click)="scrollToSection('tech-stack')">Architecture</a>
+      <a href="javascript:void(0)" (click)="scrollToSection('challenges')">Challenges</a>
+      <a [href]="githubUrl" target="_blank" rel="noopener" class="nav-github-link">
+        <span>GitHub</span>
+        <span class="material-symbols-outlined nav-ext-icon">open_in_new</span>
+      </a>
+    </nav>
+
+    <!-- Desktop Actions -->
+    <div class="nav-actions desktop-only">
+      <ng-container *ngIf="isLoggedIn(); else guestActions">
+        <span class="nav-user-badge">
+          <span>{{ currentUser()?.name }}</span>
+          <span class="role-pill">{{ currentUser()?.role }}</span>
+        </span>
+        <button class="btn-dashboard" (click)="accessPortal()">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span>Open App</span>
+        </button>
+        <button class="btn-logout" (click)="logout()" title="Sign Out">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </ng-container>
+
+      <ng-template #guestActions>
+        <a routerLink="/login" class="nav-signin">Sign In</a>
+        <button class="btn-demo-cta" (click)="scrollToSection('demo-access')">
+          <span>Try Demo</span>
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+      </ng-template>
+    </div>
+
+    <!-- Mobile Hamburger Button -->
+    <button class="btn-mobile-nav-toggle mobile-only" (click)="toggleMobileNav()" aria-label="Toggle Navigation">
+      <span class="material-symbols-outlined">{{ mobileMenuOpen ? 'close' : 'menu' }}</span>
+    </button>
+  </div>
+
+  <!-- Mobile Dropdown Navigation -->
+  <div class="mobile-nav-dropdown mobile-only" *ngIf="mobileMenuOpen">
+    <div class="mobile-nav-inner">
+      <a href="javascript:void(0)" (click)="scrollToSection('problem'); closeMobileNav()">Problem</a>
+      <a href="javascript:void(0)" (click)="scrollToSection('features'); closeMobileNav()">Features</a>
+      <a href="javascript:void(0)" (click)="scrollToSection('tech-stack'); closeMobileNav()">Architecture</a>
+      <a href="javascript:void(0)" (click)="scrollToSection('challenges'); closeMobileNav()">Challenges</a>
+      <a [href]="githubUrl" target="_blank" rel="noopener" class="nav-github-link">GitHub ↗</a>
+
+      <div class="mobile-nav-divider"></div>
+
+      <ng-container *ngIf="isLoggedIn(); else mobileGuestActions">
+        <button class="btn-dashboard w-full" (click)="accessPortal(); closeMobileNav()">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span>Open App ({{ currentUser()?.name }})</span>
+        </button>
+        <button class="btn-logout-mobile w-full" (click)="logout(); closeMobileNav()">
+          <span class="material-symbols-outlined">logout</span>
+          <span>Sign Out</span>
+        </button>
+      </ng-container>
+
+      <ng-template #mobileGuestActions>
+        <a routerLink="/login" class="nav-signin-mobile w-full" (click)="closeMobileNav()">Sign In</a>
+        <button class="btn-demo-cta w-full" (click)="scrollToSection('demo-access'); closeMobileNav()">
+          <span>Try Demo</span>
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+      </ng-template>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ══════════════════════════════════════════════════════════════════════════ -->
+  <!-- 1. HERO SECTION WITH LIGHT BACKGROUND & FLEET PHOTOGRAPHY                 -->
+  <!-- ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="hero-section light-hero">
+    <div class="hero-bg-photo"></div>
+    <div class="hero-light-overlay"></div>
+
+    <div class="hero-container">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        <span>Real-Time Fleet &amp; Maintenance Operations</span>
+      </div>
+
+      <h1 class="hero-title">
+        Real-Time Fleet Tracking <br />
+        &amp; Maintenance Scheduling
+      </h1>
+
+      <p class="hero-subtitle">
+        A centralized web platform for fleet operators to track vehicle GPS locations in real-time,
+        schedule servicing based on actual mileage, and handle driver damage reports.
+      </p>
+
+      <div class="hero-actions">
+        <button class="btn-primary" (click)="scrollToSection('demo-access')">
+          <span class="material-symbols-outlined">bolt</span>
+          <span>1-Click Demo Login</span>
+        </button>
+        <a [href]="githubUrl" target="_blank" rel="noopener" class="btn-secondary">
+          <span class="material-symbols-outlined">code</span>
+          <span>View Source Code</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════ -->
+  <!-- 2. PROBLEM STATEMENT                                                      -->
+  <!-- ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="problem-section" id="problem">
+    <div class="section-container">
+      <div class="problem-box">
+        <div class="problem-header">
+          <span class="material-symbols-outlined">lightbulb</span>
+          <h2>The Problem It Solves</h2>
+        </div>
+        <p class="problem-text">
+          Many small-to-medium fleet operations rely on manual spreadsheets, paper logbooks, and phone calls to track vehicles.
+          This leads to <strong>missed oil changes, unexpected breakdowns, untracked vehicle damage, and zero live visibility</strong>
+          into where drivers are. FleetSync centralizes vehicle status, calculates when maintenance is due before parts break,
+          and gives drivers a direct way to log damage from their phones.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════ -->
+  <!-- 3. WHAT IT DOES (FEATURES)                                                -->
+  <!-- ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="features-section" id="features">
+    <div class="section-container">
+      <div class="section-heading">
+        <span class="section-kicker">Core System Modules</span>
+        <h2>What the Application Does</h2>
+        <p class="section-sub">
+          Every feature listed below is fully implemented with real database tables, backend routes, and Angular components.
+        </p>
+      </div>
+
+      <div class="features-grid">
+        <div *ngFor="let item of features" class="feature-card">
+          <div class="feature-top">
+            <div class="feature-icon">
+              <span class="material-symbols-outlined">{{ item.icon }}</span>
+            </div>
+            <span class="tech-tag">{{ item.techTag }}</span>
+          </div>
+
+          <h3 class="feature-title">{{ item.title }}</h3>
+          <p class="feature-desc">{{ item.description }}</p>
+
+          <a *ngIf="item.route" [routerLink]="item.route" class="feature-link">
+            <span>Open View</span>
+            <span class="material-symbols-outlined">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════ -->
+  <!-- 4. HOW IT'S BUILT (TECH STACK & RATIONALE)                                -->
+  <!-- ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="tech-section" id="tech-stack">
+    <div class="section-container">
+      <div class="section-heading">
+        <span class="section-kicker">Architecture &amp; Tools</span>
+        <h2>How It Was Built</h2>
+        <p class="section-sub">
+          Technical breakdown of the stack and the reasoning behind each choice.
+        </p>
+      </div>
+
+      <div class="tech-grid">
+        <div *ngFor="let tech of techStack" class="tech-card">
+          <div class="tech-icon-wrap">
+            <span class="material-symbols-outlined">{{ tech.icon }}</span>
+          </div>
+          <div class="tech-info">
+            <div class="tech-name-role">
+              <h3>{{ tech.name }}</h3>
+              <span class="role-badge">{{ tech.role }}</span>
+            </div>
+            <p class="tech-why">{{ tech.whyChosen }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Why PostgreSQL Callout Box -->
+      <div class="rationale-box">
+        <div class="rationale-header">
+          <span class="material-symbols-outlined">help_outline</span>
+          <h3>Why PostgreSQL instead of MongoDB?</h3>
+        </div>
+        <p>
+          Fleet management data is inherently relational: <strong>vehicles have assigned drivers, vehicles have service logs, and issues belong to specific vehicles</strong>.
+          PostgreSQL was chosen because strict foreign key constraints prevent orphan records, ACID transactions protect maintenance entries, and stored procedures allow maintenance rules (like calculating odometer gaps) to execute directly in the database engine without sending raw telemetry arrays over the network.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════ -->
+  <!-- 5. CHALLENGES & SOLUTIONS                                                 -->
+  <!-- ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="role-section" id="challenges">
+    <div class="section-container">
+      <div class="section-heading">
+        <span class="section-kicker">Technical Insights</span>
+        <h2>Key Engineering Challenges</h2>
+        <p class="section-sub">
+          Obstacles encountered during development and how they were resolved.
+        </p>
+      </div>
+
+      <div class="challenge-grid">
+        <div class="challenge-card">
+          <div class="challenge-num">01</div>
+          <h3>Real-Time Map Synchronization</h3>
+          <p>
+            <strong>The Challenge:</strong> Streaming continuous GPS coordinate pings into Leaflet map markers without causing Angular UI re-rendering stutters or memory leaks when navigating between routes.
+          </p>
+          <p class="solution">
+            <strong>How I Solved It:</strong> Managed WebSocket event listeners inside Angular services with proper RxJS teardown on component destruction, and updated marker coordinates directly without recreating map layer instances.
+          </p>
+        </div>
+
+        <div class="challenge-card">
+          <div class="challenge-num">02</div>
+          <h3>Stored Procedure Maintenance Checking</h3>
+          <p>
+            <strong>The Challenge:</strong> Writing an efficient database procedure that checks active vehicle odometers and service timestamps against interval thresholds without requiring multiple back-and-forth application queries.
+          </p>
+          <p class="solution">
+            <strong>How I Solved It:</strong> Wrote <code>check_maintenance_due()</code> in PL/pgSQL to scan active vehicles and insert required maintenance alerts atomically in a single transaction.
+          </p>
+        </div>
+
+        <div class="challenge-card">
+          <div class="challenge-num">03</div>
+          <h3>Role-Based Security &amp; Audit Trail</h3>
+          <p>
+            <strong>The Challenge:</strong> Preventing drivers from seeing manager operations or other drivers' vehicles, while keeping an immutable log of all critical updates (like retiring a vehicle or reporting severe damage).
+          </p>
+          <p class="solution">
+            <strong>How I Solved It:</strong> Combined JWT authentication middleware with database triggers (<code>fn_flag_severe_issue</code>) and an <code>audit_logs</code> table to ensure every write is logged with the user ID and timestamp.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════ -->
+  <!-- 6. 1-CLICK DEMO ACCESS                                                    -->
+  <!-- ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="demo-section" id="demo-access">
+    <div class="section-container">
+      <div class="section-heading text-center">
+        <span class="section-kicker">Interactive Test</span>
+        <h2>Try the Working Project</h2>
+        <p class="section-sub">
+          Click any pre-seeded account below to log in instantly and test the interface.
+        </p>
+      </div>
+
+      <div class="demo-error" *ngIf="loginError">
+        <span class="material-symbols-outlined">error</span>
+        <span>{{ loginError }}</span>
+      </div>
+
+      <div class="demo-grid">
+        <div *ngFor="let acc of demoAccounts" class="demo-card" [ngClass]="acc.badgeClass">
+          <div class="card-header">
+            <span class="role-title">{{ acc.role }}</span>
+            <span class="role-chip-tag">{{ acc.role.toLowerCase() }}</span>
+          </div>
+
+          <p class="card-desc">{{ acc.description }}</p>
+
+          <div class="cred-box">
+            <span class="cred-label">Email:</span>
+            <code>{{ acc.email }}</code>
+            <span class="cred-label">Password:</span>
+            <code>{{ acc.password }}</code>
+          </div>
+
+          <button
+            class="btn-demo-login"
+            [disabled]="loggingInRole !== null"
+            (click)="launchDemo(acc)"
+          >
+            <span *ngIf="loggingInRole === acc.role" class="btn-spinner"></span>
+            <span *ngIf="loggingInRole !== acc.role" class="material-symbols-outlined">login</span>
+            <span>{{ loggingInRole === acc.role ? 'Logging in...' : 'Log in as ' + acc.role }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Clean Footer -->
+<footer class="project-footer">
+  <div class="footer-container">
+    <div class="footer-left">
+      <span class="footer-brand">Fleet<strong>Sync</strong></span>
+      <p class="footer-note">
+        Real-time fleet tracking, maintenance scheduling, and incident reporting system.
+      </p>
+    </div>
+
+    <div class="footer-right">
+      <a [href]="githubUrl" target="_blank" rel="noopener" class="footer-link">
+        <span class="material-symbols-outlined">code</span>
+        <span>View on GitHub</span>
+      </a>
+      <a routerLink="/login" class="footer-link">Sign In</a>
+      <span class="footer-copy">© 2026 FleetSync</span>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,178 @@
+<div class="vehicles-page">
+  <!-- Section Header -->
+  <div class="section-header">
+    <div>
+      <h1>Fleet <span class="accent">Vehicle Inventory</span></h1>
+      <p class="section-subtitle">Manage vehicle telemetry, assigned drivers, and scheduled maintenance limits.</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/vehicles/new" class="btn btn-primary">
+        <span class="material-icons">add</span>
+        <span>Add Vehicle</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Notice Feedback Banner -->
+  <div *ngIf="noticeMessage" class="notice-banner">
+    <span class="material-icons">check_circle</span>
+    <span>{{ noticeMessage }}</span>
+    <button class="btn-close" (click)="noticeMessage = ''" aria-label="Dismiss message">×</button>
+  </div>
+
+  <!-- Error Banner -->
+  <div *ngIf="errorMessage" class="notice-banner" style="background-color: #fee2e2; border-color: #fca5a5; border-left-color: #dc2626; color: #991b1b;">
+    <span class="material-icons" style="color: #dc2626;">error</span>
+    <span>{{ errorMessage }}</span>
+    <button class="btn btn-secondary btn-sm" style="margin-left: auto;" (click)="loadVehicles()">Retry</button>
+  </div>
+
+  <!-- DriveNest Top Filter & Search Card -->
+  <div class="filter-card">
+    <div class="filter-tabs">
+      <button
+        type="button"
+        class="filter-tab"
+        [class.active]="statusFilter === ''"
+        (click)="statusFilter = ''"
+      >
+        <span class="material-icons">directions_car</span>
+        All Fleet ({{ vehicles.length }})
+      </button>
+      <button
+        type="button"
+        class="filter-tab"
+        [class.active]="statusFilter === 'active'"
+        (click)="statusFilter = 'active'"
+      >
+        <span class="material-icons">check_circle</span>
+        Active
+      </button>
+      <button
+        type="button"
+        class="filter-tab"
+        [class.active]="statusFilter === 'in_service'"
+        (click)="statusFilter = 'in_service'"
+      >
+        <span class="material-icons">build</span>
+        In Service
+      </button>
+      <button
+        type="button"
+        class="filter-tab"
+        [class.active]="statusFilter === 'retired'"
+        (click)="statusFilter = 'retired'"
+      >
+        <span class="material-icons">archive</span>
+        Retired
+      </button>
+    </div>
+
+    <div class="filter-row">
+      <div class="filter-field">
+        <label for="vehicle-search" class="visually-hidden">Search Fleet Vehicles</label>
+        <input
+          id="vehicle-search"
+          type="text"
+          [(ngModel)]="searchQuery"
+          class="form-control"
+          placeholder="Search by registration, make, model, or driver..."
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="card loading-state-container">
+    <div class="spinner-circle"></div>
+    <span>Loading vehicle registry...</span>
+  </div>
+
+  <!-- Vehicle Table Card -->
+  <div class="card" *ngIf="!loading">
+    <div class="card-header">
+      <h3>Fleet Registry ({{ filteredVehicles.length }} vehicles)</h3>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th scope="col">Registration</th>
+            <th scope="col">Make &amp; Model</th>
+            <th scope="col">Year</th>
+            <th scope="col">Assigned Driver</th>
+            <th scope="col">Current Odometer</th>
+            <th scope="col">Last Serviced</th>
+            <th scope="col">Status</th>
+            <th scope="col" style="text-align: right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let v of filteredVehicles" (click)="goToDetail(v.id)" style="cursor: pointer;">
+            <td>
+              <span class="reg-badge">{{ v.registration_number }}</span>
+            </td>
+            <td>
+              <strong>{{ v.make }} {{ v.model }}</strong>
+            </td>
+            <td>{{ v.year || '—' }}</td>
+            <td>
+              <div class="driver-tag" *ngIf="v.driver_name">
+                <span class="material-icons">person</span>
+                <span>{{ v.driver_name }}</span>
+              </div>
+              <span class="text-muted" *ngIf="!v.driver_name">Unassigned</span>
+            </td>
+            <td>{{ (v.current_odometer_km || 0) | number }} km</td>
+            <td>
+              <span *ngIf="v.last_service_date">{{ v.last_service_date | date:'mediumDate' }}</span>
+              <span *ngIf="!v.last_service_date" class="text-muted">Never recorded</span>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="'badge-' + v.status">
+                <span class="badge-dot"></span>
+                {{ v.status.replace('_', ' ') }}
+              </span>
+            </td>
+            <td style="text-align: right;" (click)="$event.stopPropagation()">
+              <div class="action-buttons">
+                <a [routerLink]="['/vehicles', v.id]" class="btn btn-secondary btn-sm" [attr.aria-label]="'View dossier for ' + v.registration_number" title="View Dossier">
+                  <span class="material-icons">visibility</span>
+                </a>
+                <a [routerLink]="['/vehicles', v.id, 'edit']" class="btn btn-secondary btn-sm" [attr.aria-label]="'Edit vehicle ' + v.registration_number" title="Edit Specs">
+                  <span class="material-icons">edit</span>
+                </a>
+                <button
+                  *ngIf="auth.isAdmin()"
+                  type="button"
+                  class="btn btn-outline-danger btn-sm"
+                  (click)="deleteVehicle(v)"
+                  [attr.aria-label]="'Delete vehicle ' + v.registration_number"
+                  title="Delete (Admin Only)"
+                >
+                  <span class="material-icons">delete</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Empty State Inside Table -->
+          <tr *ngIf="filteredVehicles.length === 0">
+            <td colspan="8">
+              <div class="empty-state-card" style="border: none; padding: 36px 16px;">
+                <span class="material-icons">directions_car</span>
+                <h3>No Vehicles Found</h3>
+                <p *ngIf="searchQuery || statusFilter">No fleet vehicles match your filter criteria. Try clearing search filters.</p>
+                <p *ngIf="!searchQuery && !statusFilter">Your fleet inventory is empty. Register your first vehicle to start tracking telemetry.</p>
+                <a *ngIf="!searchQuery && !statusFilter" routerLink="/vehicles/new" class="btn btn-primary btn-sm">
+                  <span class="material-icons">add</span>
+                  <span>Register First Vehicle</span>
+                </a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

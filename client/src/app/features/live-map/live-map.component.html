@@ -1,0 +1,61 @@
+<div class="live-map-page">
+  <!-- Header -->
+  <div class="section-header">
+    <div>
+      <h1>Live GPS <span class="accent">Fleet Tracking</span></h1>
+      <p class="section-subtitle">Real-time telemetry stream, GPS random-walk simulation, and circular geofence boundary monitoring.</p>
+    </div>
+    <div class="map-badges">
+      <span class="live-pill" [class.connected]="isLive">
+        <span class="dot"></span>
+        {{ isLive ? 'Telemetry Stream Active' : 'Connecting to Gateway...' }}
+      </span>
+      <button class="btn btn-secondary btn-sm" (click)="resetMapView()">
+        <span class="material-icons">center_focus_strong</span>
+        <span>Fit All Vehicles</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Map Grid Layout -->
+  <div class="map-layout">
+    <!-- Vehicle Selector Sidebar -->
+    <div class="map-sidebar card">
+      <div class="card-header">
+        <h3>Active Fleet ({{ vehicles.length }})</h3>
+      </div>
+      <div class="vehicle-list">
+        <div
+          *ngFor="let v of vehicles"
+          class="vehicle-item"
+          [class.selected]="selectedVehicleId === v.id"
+          (click)="selectVehicle(v)"
+        >
+          <div class="v-icon">
+            <span class="material-icons">directions_car</span>
+          </div>
+          <div class="v-info">
+            <div class="v-reg">{{ v.registration_number }}</div>
+            <div class="v-model">{{ v.make }} {{ v.model }}</div>
+            <div class="v-driver">
+              <span class="material-icons">person</span>
+              {{ v.driver_name || 'Unassigned' }}
+            </div>
+          </div>
+          <div class="v-status">
+            <span class="badge badge-active">Live</span>
+          </div>
+        </div>
+
+        <div *ngIf="vehicles.length === 0" class="empty-notice">
+          Loading active telemetry vehicles...
+        </div>
+      </div>
+    </div>
+
+    <!-- Leaflet Map Container -->
+    <div class="map-wrapper card">
+      <div id="fleetMap" class="leaflet-map-element"></div>
+    </div>
+  </div>
+</div>

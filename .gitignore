@@ -10,3 +10,10 @@ build/
 .idea/
 .DS_Store
 Thumbs.db
+
+# MCP & Stitch Design Scratch
+.agents/
+stitch_screens/
+
+# Angular build output
+client/dist/

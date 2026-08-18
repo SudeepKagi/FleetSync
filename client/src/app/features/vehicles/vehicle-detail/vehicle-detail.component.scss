@@ -1,0 +1,180 @@
+.vehicle-detail-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.back-link {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 6px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.reg-pill {
+  font-size: 1.125rem;
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-primary-border);
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+.header-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+
+.predictive-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+  border-color: #BFDBFE;
+
+  .pred-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    background-color: #0052FF;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    .material-icons {
+      font-size: 26px;
+    }
+  }
+
+  .pred-content {
+    .pred-title {
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: #0052FF;
+    }
+
+    .pred-desc {
+      font-size: 0.9375rem;
+      color: #0F172A;
+      margin-top: 4px;
+    }
+  }
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl);
+}
+
+.spec-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .spec-row {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--color-border-light);
+    font-size: 0.875rem;
+
+    .spec-name {
+      color: var(--color-text-secondary);
+    }
+    .spec-val {
+      color: var(--color-text-primary);
+    }
+  }
+}
+
+.driver-profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  .driver-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background-color: #0052FF;
+    color: #FFFFFF;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.125rem;
+  }
+
+  .driver-name {
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+  .driver-sub {
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+  }
+}
+
+.geofence-editor {
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+
+  .geofence-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9375rem;
+    color: var(--color-text-primary);
+    margin-bottom: 4px;
+
+    .material-icons {
+      font-size: 18px;
+      color: var(--color-primary);
+    }
+  }
+
+  .geofence-desc {
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 12px;
+  }
+
+  .geofence-form {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--spacing-md);
+  }
+}
+
+@media (max-width: 900px) {
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .predictive-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+
+  .geofence-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

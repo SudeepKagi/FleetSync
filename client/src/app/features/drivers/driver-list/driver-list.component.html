@@ -1,0 +1,127 @@
+<div class="drivers-page">
+  <div class="section-header">
+    <div>
+      <h1>Driver <span class="accent">Personnel Roster</span></h1>
+      <p class="section-subtitle">Manage driver profiles, assigned vehicles, and mobile incident reporting logins.</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/drivers/new" class="btn btn-primary">
+        <span class="material-icons">person_add</span>
+        <span>Add Driver</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Notice Feedback Banner -->
+  <div *ngIf="noticeMessage" class="notice-banner">
+    <span class="material-icons">check_circle</span>
+    <span>{{ noticeMessage }}</span>
+    <button class="btn-close" (click)="noticeMessage = ''" aria-label="Dismiss notice">×</button>
+  </div>
+
+  <!-- Error Banner -->
+  <div *ngIf="errorMessage" class="notice-banner" style="background-color: #fee2e2; border-color: #fca5a5; border-left-color: #dc2626; color: #991b1b;">
+    <span class="material-icons" style="color: #dc2626;">error</span>
+    <span>{{ errorMessage }}</span>
+    <button class="btn btn-secondary btn-sm" style="margin-left: auto;" (click)="loadDrivers()">Retry</button>
+  </div>
+
+  <!-- Filter/Search Bar -->
+  <div class="filter-card">
+    <div class="filter-row">
+      <div class="filter-field">
+        <label for="driver-search" class="visually-hidden">Search Drivers</label>
+        <input
+          id="driver-search"
+          type="text"
+          [(ngModel)]="searchQuery"
+          class="form-control"
+          placeholder="Search drivers by name, email, license number..."
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="card loading-state-container">
+    <div class="spinner-circle"></div>
+    <span>Loading driver roster...</span>
+  </div>
+
+  <!-- Drivers Table -->
+  <div class="card" *ngIf="!loading">
+    <div class="card-header">
+      <h3>Registered Fleet Drivers ({{ filteredDrivers.length }})</h3>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th scope="col">Driver Name</th>
+            <th scope="col">License Number</th>
+            <th scope="col">Contact Phone</th>
+            <th scope="col">Assigned Vehicle</th>
+            <th scope="col" style="text-align: right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let d of filteredDrivers">
+            <td>
+              <div class="driver-profile-cell">
+                <div class="driver-avatar">{{ d.name.charAt(0) }}</div>
+                <div>
+                  <div class="driver-name">{{ d.name }}</div>
+                  <div class="driver-email">{{ d.user_email }}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="license-pill">{{ d.license_number }}</span>
+            </td>
+            <td>{{ d.phone || '—' }}</td>
+            <td>
+              <a *ngIf="d.vehicle_registration" [routerLink]="['/vehicles', d.vehicle_id]" class="vehicle-assigned-tag">
+                <span class="material-icons">directions_car</span>
+                <span>{{ d.vehicle_registration }} ({{ d.vehicle_make }} {{ d.vehicle_model }})</span>
+              </a>
+              <span *ngIf="!d.vehicle_registration" class="text-muted">Unassigned</span>
+            </td>
+            <td style="text-align: right;">
+              <div class="action-buttons">
+                <a [routerLink]="['/drivers', d.id, 'edit']" class="btn btn-secondary btn-sm" [attr.aria-label]="'Edit driver ' + d.name" title="Edit Driver">
+                  <span class="material-icons">edit</span>
+                </a>
+                <button
+                  *ngIf="auth.isAdmin()"
+                  type="button"
+                  class="btn btn-outline-danger btn-sm"
+                  (click)="deleteDriver(d)"
+                  [attr.aria-label]="'Delete driver ' + d.name"
+                  title="Delete Driver (Admin Only)"
+                >
+                  <span class="material-icons">delete</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Empty State Inside Table -->
+          <tr *ngIf="filteredDrivers.length === 0">
+            <td colspan="5">
+              <div class="empty-state-card" style="border: none; padding: 36px 16px;">
+                <span class="material-icons">person_off</span>
+                <h3>No Drivers Found</h3>
+                <p *ngIf="searchQuery">No drivers match your search query '{{ searchQuery }}'.</p>
+                <p *ngIf="!searchQuery">No drivers have been registered yet. Add a driver to assign them to vehicles.</p>
+                <a *ngIf="!searchQuery" routerLink="/drivers/new" class="btn btn-primary btn-sm">
+                  <span class="material-icons">person_add</span>
+                  <span>Register First Driver</span>
+                </a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

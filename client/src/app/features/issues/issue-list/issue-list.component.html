@@ -1,0 +1,129 @@
+<div class="issues-page">
+  <div class="section-header">
+    <div>
+      <h1>Incident &amp; <span class="accent">Damage Reports</span></h1>
+      <p class="section-subtitle">Real-time driver damage telemetry, severity triage, and maintenance workshop dispatch.</p>
+    </div>
+  </div>
+
+  <!-- Notice Feedback Banner -->
+  <div *ngIf="noticeMessage" class="notice-banner">
+    <span class="material-icons">check_circle</span>
+    <span>{{ noticeMessage }}</span>
+    <button class="btn-close" (click)="noticeMessage = ''" aria-label="Dismiss notice">×</button>
+  </div>
+
+  <!-- Error Banner -->
+  <div *ngIf="errorMessage" class="notice-banner" style="background-color: #fee2e2; border-color: #fca5a5; border-left-color: #dc2626; color: #991b1b;">
+    <span class="material-icons" style="color: #dc2626;">error</span>
+    <span>{{ errorMessage }}</span>
+    <button class="btn btn-secondary btn-sm" style="margin-left: auto;" (click)="loadIssues()">Retry</button>
+  </div>
+
+  <!-- Filter Card -->
+  <div class="filter-card">
+    <div class="filter-tabs">
+      <button type="button" class="filter-tab" [class.active]="severityFilter === ''" (click)="severityFilter = ''">
+        All Severities ({{ issues.length }})
+      </button>
+      <button type="button" class="filter-tab" [class.active]="severityFilter === 'severe'" (click)="severityFilter = 'severe'">
+        Severe Damage
+      </button>
+      <button type="button" class="filter-tab" [class.active]="severityFilter === 'moderate'" (click)="severityFilter = 'moderate'">
+        Moderate
+      </button>
+      <button type="button" class="filter-tab" [class.active]="severityFilter === 'minor'" (click)="severityFilter = 'minor'">
+        Minor
+      </button>
+    </div>
+
+    <div class="filter-row">
+      <div class="filter-field">
+        <label for="issue-search" class="visually-hidden">Search Incidents</label>
+        <input
+          id="issue-search"
+          type="text"
+          [(ngModel)]="searchQuery"
+          class="form-control"
+          placeholder="Search by issue title, vehicle registration, or reporter..."
+        />
+      </div>
+      <div class="filter-field" style="max-width: 200px;">
+        <label for="status-filter" class="visually-hidden">Filter Status</label>
+        <select id="status-filter" [(ngModel)]="statusFilter" class="form-control">
+          <option value="">All Statuses</option>
+          <option value="open">Open</option>
+          <option value="in_progress">In Progress</option>
+          <option value="resolved">Resolved</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="card loading-state-container">
+    <div class="spinner-circle"></div>
+    <span>Loading incident reports...</span>
+  </div>
+
+  <!-- Issues Grid -->
+  <div class="issues-grid" *ngIf="!loading">
+    <div *ngFor="let issue of filteredIssues" class="card issue-card">
+      <div class="issue-card-top">
+        <span class="badge" [ngClass]="'badge-' + issue.severity">
+          <span class="badge-dot"></span>
+          {{ issue.severity }}
+        </span>
+        <span class="badge" [ngClass]="'badge-' + issue.status">
+          {{ issue.status.replace('_', ' ') }}
+        </span>
+        <span class="issue-time">{{ issue.created_at | date:'mediumDate' }}</span>
+      </div>
+
+      <div *ngIf="issue.photo_url" class="photo-preview-wrap">
+        <img [src]="issue.photo_url" alt="Damage evidence photograph for {{ issue.title }}" class="issue-photo" />
+      </div>
+
+      <h3 class="issue-title">{{ issue.title }}</h3>
+      <p class="issue-desc" *ngIf="issue.description">{{ issue.description }}</p>
+
+      <div class="issue-meta-tags">
+        <div class="meta-item">
+          <span class="material-icons">directions_car</span>
+          <span><strong>{{ issue.registration_number }}</strong> ({{ issue.make }} {{ issue.model }})</span>
+        </div>
+        <div class="meta-item" *ngIf="issue.reporter_name">
+          <span class="material-icons">person</span>
+          <span>Reported by {{ issue.reporter_name }}</span>
+        </div>
+        <div class="meta-item" *ngIf="issue.damage_type">
+          <span class="material-icons">category</span>
+          <span>Area: {{ issue.damage_type }}</span>
+        </div>
+      </div>
+
+      <!-- Status Control -->
+      <div class="card-footer-controls">
+        <label [for]="'status-select-' + issue.id">Update Status:</label>
+        <select
+          [id]="'status-select-' + issue.id"
+          [ngModel]="issue.status"
+          (ngModelChange)="onStatusChange(issue, $event)"
+          class="form-control status-select"
+        >
+          <option value="open">Open</option>
+          <option value="in_progress">In Progress</option>
+          <option value="resolved">Resolved</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredIssues.length === 0" class="empty-state-card card" style="grid-column: 1 / -1;">
+      <span class="material-icons">check_circle</span>
+      <h3>No Damage Reports Found</h3>
+      <p *ngIf="searchQuery || severityFilter || statusFilter">No incident reports match your current filter settings.</p>
+      <p *ngIf="!searchQuery && !severityFilter && !statusFilter">All vehicles in the fleet are operational with zero pending damage reports.</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,73 @@
+<div class="login-container">
+  <div class="login-card">
+    <!-- Logo & Header -->
+    <div class="login-header">
+      <div class="logo-icon">
+        <span class="material-icons">directions_car</span>
+      </div>
+      <h1>Fleet<span class="accent">Sync</span></h1>
+      <p class="subtitle">Operational Fleet Intelligence & Live Telematics</p>
+    </div>
+
+    <!-- Error Alert -->
+    <div *ngIf="errorMessage" class="alert-box">
+      <span class="material-icons">error_outline</span>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <!-- Login Form -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="email">Work Email</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          class="form-control"
+          placeholder="e.g. admin@fleetsync.com"
+        />
+        <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid" class="form-error">
+          Please enter a valid work email address.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          [type]="showPassword ? 'text' : 'password'"
+          formControlName="password"
+          class="form-control"
+          placeholder="••••••••"
+        />
+        <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid" class="form-error">
+          Password is required.
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" [disabled]="loading || loginForm.invalid">
+        <span class="material-icons" *ngIf="!loading">login</span>
+        <span *ngIf="loading">Authenticating...</span>
+        <span *ngIf="!loading">Sign In to Dashboard</span>
+      </button>
+    </form>
+
+    <!-- Quick Demo Credentials -->
+    <div class="demo-accounts-section">
+      <div class="demo-divider">
+        <span>Instant Demo Logins</span>
+      </div>
+      <div class="demo-chips">
+        <button
+          *ngFor="let demo of demoAccounts"
+          type="button"
+          class="demo-chip"
+          (click)="fillDemo(demo.email, demo.password)"
+        >
+          <span class="demo-role" [ngClass]="demo.badgeClass">{{ demo.role }}</span>
+          <span class="demo-email">{{ demo.email }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

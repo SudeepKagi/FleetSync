@@ -1,0 +1,52 @@
+<aside class="app-sidebar">
+  <!-- Brand Section -->
+  <div class="sidebar-brand">
+    <a routerLink="/" class="brand-link">
+      <div class="brand-icon">
+        <span class="material-icons">directions_car</span>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Fleet<strong>Sync</strong></span>
+      </div>
+    </a>
+  </div>
+
+  <!-- User Profile Quick Chip -->
+  <div class="user-chip" *ngIf="currentUser()">
+    <div class="user-avatar">
+      {{ currentUser()?.name?.charAt(0) || 'U' }}
+    </div>
+    <div class="user-info">
+      <span class="user-name">{{ currentUser()?.name }}</span>
+      <span class="user-role-badge">{{ currentUser()?.role?.replace('_', ' ') }}</span>
+    </div>
+  </div>
+
+  <!-- Navigation Menu -->
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">MAIN NAVIGATION</div>
+    <a
+      *ngFor="let item of visibleNavItems()"
+      [routerLink]="item.route"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' || item.route === '/driver-dashboard' }"
+      class="nav-link"
+    >
+      <span class="material-icons nav-icon">{{ item.icon }}</span>
+      <span class="nav-label">{{ item.label }}</span>
+    </a>
+  </nav>
+
+  <!-- Bottom Section: Gateway Status & Logout -->
+  <div class="sidebar-bottom">
+    <div class="gateway-pill" [class.connected]="isConnected()">
+      <span class="pulse-dot"></span>
+      <span>{{ isConnected() ? 'Live GPS Active' : 'Gateway Offline' }}</span>
+    </div>
+
+    <button class="btn-sidebar-logout" (click)="logout()" title="Sign Out">
+      <span class="material-icons">logout</span>
+      <span>Sign Out</span>
+    </button>
+  </div>
+</aside>

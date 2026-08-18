@@ -1,0 +1,229 @@
+.report-damage-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.back-link {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 6px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.form-card {
+  max-width: 800px;
+  padding: var(--spacing-xl);
+}
+
+.vehicle-assigned-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background-color: var(--color-primary-light);
+  border: 1px solid var(--color-primary-border);
+  border-radius: var(--radius-md);
+  color: #1E40AF;
+  font-size: 0.875rem;
+  margin-bottom: var(--spacing-xl);
+
+  .material-icons {
+    font-size: 22px;
+    color: var(--color-primary);
+  }
+}
+
+.severe-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 18px;
+  background-color: var(--color-severe-bg);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-md);
+  color: var(--color-severe-text);
+  font-size: 0.8125rem;
+  margin-bottom: var(--spacing-lg);
+
+  .material-icons {
+    font-size: 22px;
+    color: var(--color-severe);
+  }
+
+  em {
+    font-style: normal;
+    font-weight: 700;
+  }
+}
+
+.alert-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background-color: var(--color-severe-bg);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: var(--radius-md);
+  color: var(--color-severe-text);
+  font-size: 0.8125rem;
+  margin-bottom: var(--spacing-lg);
+
+  .material-icons {
+    font-size: 18px;
+  }
+}
+
+// ─── Photo Upload & Camera Picker ──────────────────────────────────────────────
+.photo-upload-section {
+  label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+  }
+
+  .photo-picker-box {
+    border: 2px dashed #cbd5e1;
+    border-radius: 8px;
+    padding: 24px 16px;
+    text-align: center;
+    background-color: #f8fafc;
+    transition: all 0.15s ease;
+
+    &:hover {
+      border-color: #0052ff;
+      background-color: #f1f5f9;
+    }
+
+    .picker-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+
+      .photo-action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.8125rem;
+        padding: 10px 16px;
+        background-color: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        color: #0f172a;
+        cursor: pointer;
+        font-weight: 600;
+
+        .material-icons {
+          font-size: 18px;
+          color: #0052ff;
+        }
+
+        &:hover {
+          background-color: #eff6ff;
+          border-color: #93c5fd;
+        }
+      }
+    }
+
+    .picker-hint {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin: 0;
+    }
+  }
+
+  .photo-preview-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+    .preview-img {
+      width: 100px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+    }
+
+    .preview-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-grow: 1;
+
+      .preview-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: #059669;
+
+        .material-icons {
+          font-size: 18px;
+        }
+      }
+
+      .preview-actions {
+        display: flex;
+        gap: 8px;
+      }
+    }
+  }
+}
+
+.success-card {
+  max-width: 540px;
+  text-align: center;
+  padding: 48px;
+
+  .success-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: var(--color-active-bg);
+    color: var(--color-active);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+
+    .material-icons {
+      font-size: 36px;
+    }
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: var(--color-text-secondary);
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+
+  .success-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+}

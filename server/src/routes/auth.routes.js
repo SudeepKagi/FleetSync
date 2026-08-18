@@ -1,0 +1,15 @@
+/**
+ * auth.routes.js: Maps authentication endpoints for registration, login, and user profile.
+ * Mounted at: /api/auth in app.js
+ */
+
+const express = require('express');
+const router = express.Router();
+const authController = require('../controllers/auth.controller');
+const { verifyToken } = require('../middleware/auth');
+
+router.post('/register', authController.register);
+router.post('/login',    authController.login);
+router.get('/me',        verifyToken, authController.getMe);
+
+module.exports = router;

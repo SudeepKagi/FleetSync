@@ -1,0 +1,22 @@
+services:
+  # ─── Backend API (Node.js + Express + Socket.io) ───────────────────────────
+  - type: web
+    name: fleetsync-api
+    runtime: node
+    region: oregon
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false   # Set manually in Render dashboard (your Neon connection string)
+      - key: JWT_SECRET
+        sync: false   # Set manually in Render dashboard
+      - key: JWT_EXPIRES_IN
+        value: 24h
+      - key: CORS_ORIGIN
+        sync: false   # Set to your Vercel frontend URL, e.g. https://fleet-sync.vercel.app
+    healthCheckPath: /api/health
+    autoDeploy: true

@@ -1,0 +1,33 @@
+<div class="shell-layout">
+  <!-- Mobile Header Bar (Visible on <=768px only) -->
+  <header class="mobile-topbar">
+    <button class="btn-hamburger" (click)="toggleMobileMenu()" aria-label="Toggle navigation menu">
+      <span class="material-icons">menu</span>
+    </button>
+    <div class="mobile-brand">
+      <span class="brand-name">Fleet<strong>Sync</strong></span>
+    </div>
+    <div class="mobile-user-avatar" *ngIf="auth.user()">
+      {{ auth.user()?.name?.charAt(0) || 'U' }}
+    </div>
+  </header>
+
+  <!-- Mobile Backdrop Overlay -->
+  <div
+    class="sidebar-backdrop"
+    *ngIf="isMobileMenuOpen()"
+    (click)="closeMobileMenu()"
+  ></div>
+
+  <!-- Modern Left Sidebar (Desktop Static / Mobile Drawer) -->
+  <div class="sidebar-wrapper" [class.mobile-open]="isMobileMenuOpen()">
+    <app-sidebar (click)="closeMobileMenu()" />
+  </div>
+
+  <!-- Main Content Wrapper -->
+  <div class="shell-main">
+    <main class="page-content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+<div class="service-history-page">
+  <div class="section-header">
+    <div>
+      <a routerLink="/driver-dashboard" class="back-link">← Back to Driver Dashboard</a>
+      <h1>Vehicle <span class="accent">Service History</span></h1>
+      <p class="section-subtitle">Maintenance records, oil services, inspections, and odometer logs for your assigned vehicle.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h3>Completed Service Logs ({{ records.length }} Records)</h3>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Service Date</th>
+            <th>Odometer Reading</th>
+            <th>Work Description</th>
+            <th style="text-align: right;">Cost ($)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let record of records">
+            <td>
+              <strong>{{ record.service_date | date:'mediumDate' }}</strong>
+            </td>
+            <td>{{ (record.odometer_km || 0) | number }} km</td>
+            <td>{{ record.description || 'Routine scheduled maintenance' }}</td>
+            <td style="text-align: right;">
+              <strong>${{ (record.cost || 0) | number:'1.2-2' }}</strong>
+            </td>
+          </tr>
+
+          <tr *ngIf="records.length === 0">
+            <td colspan="4" style="text-align: center; color: #94A3B8; padding: 36px;">
+              No historical service records found for your vehicle.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
